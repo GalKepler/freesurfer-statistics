@@ -14,6 +14,17 @@ class CorticalStats(FreesurferStats):
     def __init__(self, stats_file: Union[Path, str]) -> None:
         super().__init__(stats_file)
 
+    def _read_headers(self) -> dict:
+        """
+        Parses the headers found in Freesurfer's .stats file.
+
+        Returns
+        -------
+        dict
+            A dictionary with headers' titles as keys and their
+            corresponding parsed values.
+        """
+
     # def _read_headers(self, stream: TextIO) -> None:
     #     headers = {}
     #     while True:

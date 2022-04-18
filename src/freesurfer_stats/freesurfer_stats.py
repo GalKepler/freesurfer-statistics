@@ -102,8 +102,7 @@ class FreesurferStats:
                 return "subcortex"
         return "unknown"
 
-    @staticmethod
-    def _read_headers(self) -> list:
+    def _get_headers(self) -> list:
         """
         Read stats file's headers
 
