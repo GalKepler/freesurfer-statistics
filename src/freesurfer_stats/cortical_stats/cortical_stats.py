@@ -1,18 +1,46 @@
-import datetime
-import typing
+from enum import Enum
 from pathlib import Path
-from typing import TextIO
+from typing import Callable
 from typing import Union
 
+from freesurfer_stats.cortical_stats.format import SpecialHeaders
 from freesurfer_stats.freesurfer_stats import FreesurferStats
 
 
 class CorticalStats(FreesurferStats):
-    # Headers structure
+    #: Headers structure
     HEADERS_END = "Measure"
+
+    #: Special headers
+    SPECIAL_HEADERS = SpecialHeaders
 
     def __init__(self, stats_file: Union[Path, str]) -> None:
         super().__init__(stats_file)
+
+    def _read_headers(self, special_headers: Enum = None) -> dict:
+        """
+        Parses the headers found in Freesurfer's .stats file.
+
+        Returns
+        -------
+        dict
+            A dictionary with headers' titles as keys and their
+            corresponding parsed values.
+        """
+        special_headers = special_headers or self.SPECIAL_HEADERS
+        headers = {}
+        for line in self._get_headers():
+            header, value = line.split(" ", maxsplit=1)
+            if header in special_headers:
+                parser = special_headers[header]
+                func = parser["func"]
+                if isinstance(func, Callable):
+                    kwargs = parser.get("kwargs", {})
+                    value = func(value, **kwargs)
+                elif isinstance(func, str):
+                    value = func
+            headers[header] = value
+        return headers
 
     # def _read_headers(self, stream: TextIO) -> None:
     #     headers = {}
