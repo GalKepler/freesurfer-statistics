@@ -43,25 +43,16 @@ Features
 
 Usage
 --------
+Parsing of file's "metadata" -> headers and available metrics
+
 .. code-block:: python
         
-            from freesurfer_stats.cortical_stats import CorticalStats
-            stats = CorticalStats('/path/to/stats/file')
-            for key,value in stats.headers.items(): # Headers -> "metadata"
-                print(key,"---",value)
-            title --- Table of FreeSurfer cortical parcellation anatomical statistics
-            CreationTime --- 2021-12-12 07:30:01
-            generating_program --- mris_anatomical_stats
-            cvs_version --- 7.2.0
-            ...
-
-            print(stats.table_columns) # Available measurements extracted per ROI
-
-
-.. csv-table::
-        :file: docs/examples/cortical_columns.csv
-        :widths: 1, 1, 1, 1, 1
-        :header-rows: 1
+            >>> from freesurfer_stats.cortical_stats import CorticalStats
+            >>> stats = CorticalStats('/path/to/stats/file')
+            >>> type(stats.headers) # Headers -> "metadata"
+            dict
+            >>> type(stats.table_columns) # Available measurements extracted per ROI
+            pandas.core.frame.DataFrame
   
 Credits
 -------
