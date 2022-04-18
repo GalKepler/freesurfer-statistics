@@ -58,7 +58,7 @@ class FreesurferStats:
         pd.DataFrame
             Measurements from the stats file.
         """
-        pass
+        raise NotImplementedError
 
     def get_whole_brain_measurements(self) -> pd.DataFrame:
         """
@@ -69,7 +69,7 @@ class FreesurferStats:
         pd.DataFrame
             Measurements from the stats file.
         """
-        pass
+        raise NotImplementedError
 
     def query_header(self) -> list:
         """
@@ -80,7 +80,7 @@ class FreesurferStats:
         list
             The headers from the stats file.
         """
-        pass
+        raise NotImplementedError
 
     def query_hemisphere(self):
         """
@@ -101,6 +101,20 @@ class FreesurferStats:
             if subcortical_match:
                 return "subcortex"
         return "unknown"
+
+    def _read_headers(
+        self,
+    ) -> dict:
+        """
+        Parses the headers found in Freesurfer's .stats file.
+
+        Returns
+        -------
+        dict
+            A dictionary with headers' titles as keys and their
+            corresponding parsed values.
+        """
+        raise NotImplementedError
 
     def _get_headers(self) -> list:
         """
@@ -162,3 +176,15 @@ class FreesurferStats:
             The hemisphere of the stats file.
         """
         return self.query_hemisphere()
+
+    @property
+    def headers(self) -> dict:
+        """
+        Get the headers from the stats file.
+
+        Returns
+        -------
+        dict
+            The headers from the stats file.
+        """
+        return self._read_headers()
