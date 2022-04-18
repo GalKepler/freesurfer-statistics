@@ -4,10 +4,11 @@
 
 
 import unittest
+
 from click.testing import CliRunner
 
-from src import freesurfer_stats
 from src import cli
+from src import freesurfer_stats
 
 
 class TestFreesurfer_stats(unittest.TestCase):
@@ -27,7 +28,7 @@ class TestFreesurfer_stats(unittest.TestCase):
         runner = CliRunner()
         result = runner.invoke(cli.main)
         assert result.exit_code == 0
-        assert 'freesurfer_stats.cli.main' in result.output
-        help_result = runner.invoke(cli.main, ['--help'])
+        assert "freesurfer_stats.cli.main" in result.output
+        help_result = runner.invoke(cli.main, ["--help"])
         assert help_result.exit_code == 0
-        assert '--help  Show this message and exit.' in help_result.output
+        assert "--help  Show this message and exit." in help_result.output

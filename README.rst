@@ -22,6 +22,9 @@ Python package for conviniently parsing Freesurfer's .stats files.
 * Free software: Apache Software License 2.0
 * Documentation: https://freesurfer-stats.readthedocs.io.
 
+About The Project
+--------
+Freesurfer <https://surfer.nmr.mgh.harvard.edu/>
 
 Features
 --------
