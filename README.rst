@@ -57,6 +57,8 @@ Usage
 
             print(stats.table_columns) # Available measurements extracted per ROI
 
+
+
 .. csv-table:: Cortical columns
         :file: docs/examples/cortical_columns.csv
 
