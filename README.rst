@@ -44,7 +44,11 @@ Features
             headers = stats.headers
             for key,value in headers.items():
                 print(key,"---",value)
-        
+
+        title --- Table of FreeSurfer cortical parcellation anatomical statistics
+        CreationTime --- 2021-12-12 07:30:01
+        generating_program --- mris_anatomical_stats
+        cvs_version --- 7.2.0
 
 Credits
 -------
