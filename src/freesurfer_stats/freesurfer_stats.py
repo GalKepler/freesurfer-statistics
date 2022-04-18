@@ -90,16 +90,11 @@ class FreesurferStats:
         str
             The hemisphere of the stats file.
         """
-        for line in self.stream:
-            cortical_match = self.HEMI_PATTERN.match(line)
-            if cortical_match:
-                return self.STRUCTURE_MAP.get(
-                    cortical_match.group(1), "unknown"
-                )
-            subcortical_match = self.SUBCORTEX_PATTERN.match(line)
-            if subcortical_match:
-                return "subcortex"
-        return "unknown"
+        hemi = self.headers.get("hemi")
+        if hemi:
+            return self.STRUCTURE_MAP.get(hemi, "unknown")
+        else:
+            return "subcortex"
 
     def _read_headers(self, special_headers: dict = None) -> dict:
         """
