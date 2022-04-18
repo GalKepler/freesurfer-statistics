@@ -6,6 +6,8 @@ from typing import Union
 
 import pandas as pd
 
+from freesurfer_stats.utils import UNITS_CONVERTER
+
 
 class FreesurferStats:
     STRUCTURE_MAP = {
@@ -17,8 +19,10 @@ class FreesurferStats:
 
     #: Columns format
     COLUMNS_IDENTIFIER = "TableCol"
-    COLUMNS_PROPERTIES = ["ColHeader", "FieldName", "Units"]
-    SPECIAL_HEADERS = {}
+    COLUMNS_PROPERTIES = ["ColHeader", "FieldName", "Units", "CastedType"]
+
+    #: Data format
+    DATA_IDENTIFIER = "ColHeaders"
 
     def __init__(self, stats_file: Union[Path, str]) -> None:
         self.path = self.validate_stats_file(stats_file)
@@ -88,6 +92,10 @@ class FreesurferStats:
         for line in self._get_table_columns():
             _, i, col, value = [i.strip() for i in line.split(maxsplit=3)]
             table_columns.loc[int(i), col] = value
+            if col == "Units":
+                table_columns.loc[int(i), "CastedType"] = UNITS_CONVERTER.get(
+                    value.split("^")[0]
+                ).__name__
         return table_columns
 
     def _read_headers(self, special_headers: dict = None) -> dict:
@@ -159,6 +167,22 @@ class FreesurferStats:
             if line:
                 headers.append(line)
         return headers
+
+    def _get_data(self) -> list:
+        """
+        Read stats file's data rows
+
+        Returns
+        -------
+        list
+            A list of rows containing stats file's measurements
+        """
+        lines = self.stream.readlines()
+        for i, line in enumerate(lines):
+            line = self._read_header_line(line)
+            if line.startswith(self.DATA_IDENTIFIER):
+                break
+        return [line] + lines[i + 1 :]
 
     @staticmethod
     def _read_header_line(line: str) -> str:
