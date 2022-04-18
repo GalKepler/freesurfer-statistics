@@ -58,15 +58,9 @@ Usage
             print(stats.table_columns) # Available measurements extracted per ROI
 
 
-+-----------+-------------------------------------+----------------------------------------------+
-| ``fb2``   | ``BeautifulSoup`` module            | ``BeautifulSoup`` module                     |
-+-----------+-------------------------------------+----------------------------------------------+
-| ``html``  | ``BeautifulSoup`` module            | ``BeautifulSoup`` module                     |
-+-----------+-------------------------------------+----------------------------------------------+
-
-
 .. csv-table::
         :file: docs/examples/cortical_columns.csv
+        :widths: 1, 1, 1, 1, 1
         :header-rows: 1
   
 Credits
