@@ -16,5 +16,3 @@ class SubCorticalStats(FreesurferStats):
 
     def __init__(self, stats_file: Union[Path, str]) -> None:
         super().__init__(stats_file)
-
-    
