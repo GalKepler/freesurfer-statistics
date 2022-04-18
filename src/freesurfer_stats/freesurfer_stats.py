@@ -14,10 +14,10 @@ class FreesurferStats:
         "aseg": "subcortex",
         "subcortex": "subcortex",
     }
-    HEMI_PATTERN = re.compile(r"# hemi (lh|rh)")
-    SUBCORTEX_PATTERN = re.compile(r"# cmdline mri_segstats *")
 
     SPECIAL_HEADERS = {}
+
+    COLUMNS_FORMAT = ""
 
     def __init__(self, stats_file: Union[Path, str]) -> None:
         self.path = self.validate_stats_file(stats_file)
@@ -96,15 +96,41 @@ class FreesurferStats:
         else:
             return "subcortex"
 
+    def _get_measures(self) -> list:
+        """
+        Read stats file's measures
+
+        Returns
+        -------
+        list
+            A list of the measures from the stats file.
+        """
+        measures = []
+        lines = self.stream.readlines()
+        for line in lines:
+            try:
+                line = self._read_header_line(line)
+            except AssertionError:
+                break
+            if line.startswith(self.HEADERS_END):
+                measures.append(line.replace(self.HEADERS_END, "").strip())
+        return measures
+
     def _read_headers(self, special_headers: dict = None) -> dict:
         """
         Parses the headers found in Freesurfer's .stats file.
 
+        Parameters
+        ----------
+        special_headers : dict, optional
+            A dictionary with headers' titles as keys and their
+            corresponding target keys and parsing methods
+            as "key" and "func" keys accordingly. The default is None.
+
         Returns
         -------
         dict
-            A dictionary with headers' titles as keys and their
-            corresponding parsed values.
+            _description_
         """
         special_headers = special_headers or self.SPECIAL_HEADERS
         headers = {}
