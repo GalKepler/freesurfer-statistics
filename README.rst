@@ -55,12 +55,14 @@ Parsing of file's "metadata" -> headers and available metrics
             pandas.core.frame.DataFrame
 
 Extraction of whole-brain measurements
+
 .. code-block:: python3
-           
-                  >>> from freesurfer_stats.cortical_stats import CorticalStats
-                  >>> stats = CorticalStats('/path/to/stats/file')
-                  >>> type(stats.whole_brain_measurements)
-                  pandas.core.frame.DataFrame
+
+            >>> from freesurfer_stats.cortical_stats import CorticalStats
+            >>> from freesurfer_stats.cortical_stats import CorticalStats
+            >>> stats = CorticalStats('/path/to/stats/file')
+            >>> type(stats.whole_brain_measurements)
+            pandas.core.frame.DataFrame
 Credits
 -------
 
