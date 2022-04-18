@@ -24,12 +24,27 @@ Python package for conviniently parsing Freesurfer's .stats files.
 
 About The Project
 --------
-Freesurfer <https://surfer.nmr.mgh.harvard.edu/>
+`Freesurfer`_ is an open source neuroimaging toolkit for processing, analyzing, and visualizing human brain MR images.
+Although widely used, some of the most popular tools for analyzing (specifically structural) datasets are relatively not user-friendly.
+An example for such tool is the cortical and sub-cortical parcellations conducted during the structural processing;
+
+The freesurfer_stats package is a Python package for parsing Freesurfer's .stats files, which are the result of the above-mentioned parcellations.
+These files are custom-made for the Freesurfer software, and can be somewhat difficult to query.
+
+.. _Freesurfer: https://surfer.nmr.mgh.harvard.edu/
 
 Features
 --------
 
-* TODO
+* Parsing of .stats files' "metadata", i.e headers located in these files, describing the process leading to their making:
+.. code-block:: python
+        
+            from freesurfer_stats.cortical_stats import CorticalStats
+            stats = CorticalStats('/path/to/stats/file')
+            headers = stats.headers
+            for key,value in headers.items():
+                print(key,"---",value)
+        
 
 Credits
 -------
