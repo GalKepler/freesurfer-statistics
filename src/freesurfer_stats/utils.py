@@ -8,4 +8,4 @@ def parse_date(date_str: str, format: str) -> datetime:
     return datetime.strptime(date_str, format)
 
 
-UNITS_CONVERTER = {"NA": str, "unitless": float, "mm": float}
+UNITS_CONVERTER = {"NA": str, "unitless": float, "mm": float, "MR": float}
