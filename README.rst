@@ -55,6 +55,11 @@ Usage
             cvs_version --- 7.2.0
             ...
 
+            print(stats.table_columns) # Available measurements extracted per ROI
+
+.. csv-table:: Cortical columns
+        :file: docs/examples/cortical_columns.csv
+
   
 Credits
 -------
