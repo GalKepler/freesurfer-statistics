@@ -59,9 +59,9 @@ Usage
 
 
 
-.. csv-table:: Cortical columns
+.. csv-table::
         :file: docs/examples/cortical_columns.csv
-
+        :header-rows: 1
   
 Credits
 -------
