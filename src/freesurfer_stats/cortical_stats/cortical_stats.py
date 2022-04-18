@@ -14,9 +14,6 @@ class CorticalStats(FreesurferStats):
     #: Special headers
     SPECIAL_HEADERS = SpecialHeaders
 
-    #: Special measurements
-    SPECIAL_WHOLEBRAIN_MEASUREMENTS = {}
-
     def __init__(self, stats_file: Union[Path, str]) -> None:
         super().__init__(stats_file)
 
@@ -32,7 +29,7 @@ class CorticalStats(FreesurferStats):
             Whole brain measurements.
         """
         data = pd.DataFrame(columns=["index", "description", "unit", "value"])
-        for i, line in enumerate(self._get_measures()):
+        for i, line in enumerate(self._get_wholebrain_measures()):
             _, col, description, val, unit = [
                 j.strip() for j in line.split(",")
             ]
@@ -43,3 +40,35 @@ class CorticalStats(FreesurferStats):
             ]
             data.loc[i, "value"] = float(val)
         return data
+
+    def _get_wholebrain_measures(self) -> list:
+        """
+        Read stats file's measures
+
+        Returns
+        -------
+        list
+            A list of the measures from the stats file.
+        """
+        measures = []
+        lines = self.stream.readlines()
+        for line in lines:
+            try:
+                line = self._read_header_line(line)
+            except AssertionError:
+                break
+            if line.startswith(self.HEADERS_END):
+                measures.append(line.replace(self.HEADERS_END, "").strip())
+        return measures
+
+    @property
+    def whole_brain_measurements(self) -> pd.DataFrame:
+        """
+        Get whole brain measurements.
+
+        Returns
+        -------
+        pd.DataFrame
+            Whole brain measurements.
+        """
+        return self.parse_whole_brain_measurements()

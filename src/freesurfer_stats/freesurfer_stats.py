@@ -15,9 +15,10 @@ class FreesurferStats:
         "subcortex": "subcortex",
     }
 
+    #: Columns format
+    COLUMNS_IDENTIFIER = "TableCol"
+    COLUMNS_PROPERTIES = ["ColHeader", "FieldName", "Units"]
     SPECIAL_HEADERS = {}
-
-    COLUMNS_FORMAT = ""
 
     def __init__(self, stats_file: Union[Path, str]) -> None:
         self.path = self.validate_stats_file(stats_file)
@@ -59,28 +60,6 @@ class FreesurferStats:
         """
         raise NotImplementedError
 
-    def get_whole_brain_measurements(self) -> pd.DataFrame:
-        """
-        Get the whole-brain measurements from the stats file.
-
-        Returns
-        -------
-        pd.DataFrame
-            Measurements from the stats file.
-        """
-        raise NotImplementedError
-
-    def query_header(self) -> list:
-        """
-        Get the headers from the stats file.
-
-        Returns
-        -------
-        list
-            The headers from the stats file.
-        """
-        raise NotImplementedError
-
     def query_hemisphere(self):
         """
         Query the hemisphere of the stats file.
@@ -96,25 +75,20 @@ class FreesurferStats:
         else:
             return "subcortex"
 
-    def _get_measures(self) -> list:
+    def _read_table_columns(self):
         """
-        Read stats file's measures
+        Read stats file's table columns
 
         Returns
         -------
         list
-            A list of the measures from the stats file.
+            A list of the table columns from the stats file.
         """
-        measures = []
-        lines = self.stream.readlines()
-        for line in lines:
-            try:
-                line = self._read_header_line(line)
-            except AssertionError:
-                break
-            if line.startswith(self.HEADERS_END):
-                measures.append(line.replace(self.HEADERS_END, "").strip())
-        return measures
+        table_columns = pd.DataFrame(columns=self.COLUMNS_PROPERTIES)
+        for line in self._get_table_columns():
+            _, i, col, value = [i.strip() for i in line.split(maxsplit=3)]
+            table_columns.loc[int(i), col] = value
+        return table_columns
 
     def _read_headers(self, special_headers: dict = None) -> dict:
         """
@@ -147,8 +121,25 @@ class FreesurferStats:
                     value = func(value, **kwargs)
                 elif isinstance(func, str):
                     value = func
-            headers[key] = value
+            headers[key or header] = value
         return headers
+
+    def _get_table_columns(self) -> list:
+        """
+        Read stats file's table columns
+
+        Returns
+        -------
+        list
+            A list of the table columns from the stats file.
+        """
+        columns = []
+        lines = self.stream.readlines()
+        for line in lines:
+            line = self._read_header_line(line)
+            if line.startswith(self.COLUMNS_IDENTIFIER):
+                columns.append(line)
+        return columns
 
     def _get_headers(self) -> list:
         """
@@ -184,7 +175,7 @@ class FreesurferStats:
         str
             The header line.
         """
-        assert line.startswith("# ")
+        # assert line.startswith("# ")
         return line[2:].rstrip()
 
     @property
@@ -222,3 +213,15 @@ class FreesurferStats:
             The headers from the stats file.
         """
         return self._read_headers()
+
+    @property
+    def table_columns(self) -> pd.DataFrame:
+        """
+        Get the table columns from the stats file.
+
+        Returns
+        -------
+        pd.DataFrame
+            The table columns from the stats file.
+        """
+        return self._read_table_columns()
