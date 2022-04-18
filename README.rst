@@ -45,7 +45,7 @@ Usage
 --------
 Parsing of file's "metadata" -> headers and available metrics
 
-.. code-block:: python
+.. code-block:: python3
         
             >>> from freesurfer_stats.cortical_stats import CorticalStats
             >>> stats = CorticalStats('/path/to/stats/file')
@@ -53,7 +53,14 @@ Parsing of file's "metadata" -> headers and available metrics
             dict
             >>> type(stats.table_columns) # Available measurements extracted per ROI
             pandas.core.frame.DataFrame
-  
+
+Extraction of whole-brain measurements
+.. code-block:: python3
+           
+                  >>> from freesurfer_stats.cortical_stats import CorticalStats
+                  >>> stats = CorticalStats('/path/to/stats/file')
+                  >>> type(stats.whole_brain_measurements)
+                  pandas.core.frame.DataFrame
 Credits
 -------
 
