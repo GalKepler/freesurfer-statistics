@@ -1,10 +1,7 @@
 """Main module."""
-import datetime
-import io
 import re
-import typing
 from pathlib import Path
-from typing import TextIO
+from typing import Callable
 from typing import Union
 
 import pandas as pd
@@ -19,6 +16,8 @@ class FreesurferStats:
     }
     HEMI_PATTERN = re.compile(r"# hemi (lh|rh)")
     SUBCORTEX_PATTERN = re.compile(r"# cmdline mri_segstats *")
+
+    SPECIAL_HEADERS = {}
 
     def __init__(self, stats_file: Union[Path, str]) -> None:
         self.path = self.validate_stats_file(stats_file)
@@ -102,9 +101,7 @@ class FreesurferStats:
                 return "subcortex"
         return "unknown"
 
-    def _read_headers(
-        self,
-    ) -> dict:
+    def _read_headers(self, special_headers: dict = None) -> dict:
         """
         Parses the headers found in Freesurfer's .stats file.
 
@@ -114,7 +111,23 @@ class FreesurferStats:
             A dictionary with headers' titles as keys and their
             corresponding parsed values.
         """
-        raise NotImplementedError
+        special_headers = special_headers or self.SPECIAL_HEADERS
+        headers = {}
+        for line in self._get_headers():
+            header, value = line.split(" ", maxsplit=1)
+            key = header
+            value = value.strip()
+            if header in special_headers:
+                parser = special_headers[header]
+                func = parser.get("func")
+                key = parser.get("key")
+                if isinstance(func, Callable):
+                    kwargs = parser.get("kwargs", {})
+                    value = func(value, **kwargs)
+                elif isinstance(func, str):
+                    value = func
+            headers[key] = value
+        return headers
 
     def _get_headers(self) -> list:
         """
