@@ -132,8 +132,7 @@ class FreesurferStats:
             A list of the table columns from the stats file.
         """
         columns = []
-        lines = self.stream.readlines()
-        for line in lines:
+        for line in self.lines:
             line = self._read_header_line(line)
             if line.startswith(self.COLUMNS_IDENTIFIER):
                 columns.append(line)
@@ -149,8 +148,7 @@ class FreesurferStats:
             A list of the headers from the stats file.
         """
         headers = []
-        lines = self.stream.readlines()
-        for line in lines:
+        for line in self.lines:
             line = self._read_header_line(line)
             if line.startswith(self.HEADERS_END):
                 break
@@ -167,12 +165,11 @@ class FreesurferStats:
         list
             A list of rows containing stats file's measurements
         """
-        lines = self.stream.readlines()
-        for i, line in enumerate(lines):
+        for i, line in enumerate(self.lines):
             line = self._read_header_line(line)
             if line.startswith(self.DATA_IDENTIFIER):
                 break
-        return lines[i + 1 :]
+        return self.lines[i + 1 :]
 
     @staticmethod
     def _read_header_line(line: str) -> str:
@@ -192,17 +189,31 @@ class FreesurferStats:
         # assert line.startswith("# ")
         return line[2:].rstrip()
 
-    @property
-    def stream(self):
+    def _read_lines(self) -> list:
         """
-        Get the stats file as a stream.
+        Read the stats file's lines.
 
         Returns
         -------
-        io.TextIOWrapper
-            The stats file as a stream.
+        list
+            A list of the lines from the stats file.
         """
-        return self.path.open("r")
+        stream = self.path.open("r")
+        lines = stream.readlines()
+        stream.close()
+        return lines
+
+    @property
+    def lines(self) -> list:
+        """
+        Get the lines contained in the stats file.
+
+        Returns
+        -------
+        list
+            The lines contained in the stats file.
+        """
+        return self._read_lines()
 
     @property
     def hemisphere(self) -> str:
@@ -239,3 +250,15 @@ class FreesurferStats:
             The table columns from the stats file.
         """
         return self._read_table_columns()
+
+    @property
+    def structural_measurements(self) -> pd.DataFrame:
+        """
+        Get the structural measurements from the stats file.
+
+        Returns
+        -------
+        pd.DataFrame
+            Measurements from the stats file.
+        """
+        return self.get_structural_measurements()
