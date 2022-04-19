@@ -23,7 +23,7 @@ Python package for conviniently parsing Freesurfer's .stats files.
 * Documentation: https://freesurfer-stats.readthedocs.io.
 
 About The Project
---------
+-----------------
 `Freesurfer`_ is an open source neuroimaging toolkit for processing, analyzing, and visualizing human brain MR images.
 Although widely used, some of the most popular tools for analyzing (specifically structural) datasets are relatively not user-friendly.
 An example for such tool is the cortical and sub-cortical parcellations conducted during the structural processing;
@@ -57,12 +57,13 @@ Parsing of file's "metadata" -> headers and available metrics
 Extraction of whole-brain measurements
 
 .. code-block:: python3
-
+        
             >>> from freesurfer_stats.cortical_stats import CorticalStats
             >>> from freesurfer_stats.cortical_stats import CorticalStats
             >>> stats = CorticalStats('/path/to/stats/file')
             >>> type(stats.whole_brain_measurements)
             pandas.core.frame.DataFrame
+
 Credits
 -------
 
