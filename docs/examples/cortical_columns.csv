@@ -1,0 +1,11 @@
+,ColHeader,FieldName,Units,CastedType
+1,StructName,Structure Name,NA,str
+2,NumVert,Number of Vertices,unitless,float
+3,SurfArea,Surface Area,mm^2,float
+4,GrayVol,Gray Matter Volume,mm^3,float
+5,ThickAvg,Average Thickness,mm,float
+6,ThickStd,Thickness StdDev,mm,float
+7,MeanCurv,Integrated Rectified Mean Curvature,mm^-1,float
+8,GausCurv,Integrated Rectified Gaussian Curvature,mm^-2,float
+9,FoldInd,Folding Index,unitless,float
+10,CurvInd,Intrinsic Curvature Index,unitless,float
