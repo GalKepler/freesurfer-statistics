@@ -23,8 +23,8 @@ class FreesurferStats:
     COLUMNS_PROPERTIES = ["ColHeader", "FieldName", "Units", "CastedType"]
 
     #: Data format
-    DATA_IDENTIFIER = "ColHeaders"
-    INDEX_COLUMN = "FieldName"
+    INDEX_COLUMN = "ColHeader"
+    COLUMNS_CONVERTER = {"StructName": "Region"}
 
     def __init__(self, stats_file: Union[Path, str]) -> None:
         self.path = validate_stats_file(stats_file)
@@ -38,21 +38,15 @@ class FreesurferStats:
         pd.DataFrame
             Measurements from the stats file.
         """
-        lines = self._get_data()
-        table_columns = self.table_columns
-        converters = [
-            UNITS_CONVERTER.get(val.split("^")[0])
-            for val in table_columns["Units"]
-        ]
-        data = pd.DataFrame(
-            index=table_columns[self.INDEX_COLUMN], columns=range(len(lines))
+        return pd.read_csv(
+            self.path,
+            header=None,
+            names=self.table_columns[self.INDEX_COLUMN].replace(
+                self.COLUMNS_CONVERTER
+            ),
+            delim_whitespace=True,
+            comment="#",
         )
-        for i, line in enumerate(lines):
-            data[i] = [
-                converter(val)
-                for converter, val in zip(converters, line.split())
-            ]
-        return data
 
     def query_hemisphere(self):
         """
@@ -82,10 +76,6 @@ class FreesurferStats:
         for line in self._get_table_columns():
             _, i, col, value = [i.strip() for i in line.split(maxsplit=3)]
             table_columns.loc[int(i), col] = value
-            if col == "Units":
-                table_columns.loc[int(i), "CastedType"] = UNITS_CONVERTER.get(
-                    value.split("^")[0]
-                ).__name__
         return table_columns
 
     def _read_headers(self, special_headers: dict = None) -> dict:
@@ -155,21 +145,6 @@ class FreesurferStats:
             if line:
                 headers.append(line)
         return headers
-
-    def _get_data(self) -> list:
-        """
-        Read stats file's data rows
-
-        Returns
-        -------
-        list
-            A list of rows containing stats file's measurements
-        """
-        for i, line in enumerate(self.lines):
-            line = self._read_header_line(line)
-            if line.startswith(self.DATA_IDENTIFIER):
-                break
-        return self.lines[i + 1 :]
 
     @staticmethod
     def _read_header_line(line: str) -> str:
