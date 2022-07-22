@@ -1,12 +1,6 @@
-
-from click.testing import CliRunner
-
 from freesurfer_statistics.cli import main
 
 
 def test_main():
-    runner = CliRunner()
-    result = runner.invoke(main, [])
-
-    assert result.output == '()\n'
-    assert result.exit_code == 0
+    short_help = main.get_short_help_str()
+    assert short_help == "Console script for freesurfer_stats."

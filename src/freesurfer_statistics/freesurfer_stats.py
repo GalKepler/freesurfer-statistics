@@ -1,11 +1,10 @@
 """Main module."""
-import re
 from pathlib import Path
 from typing import Callable, Union
 
 import pandas as pd
 
-from freesurfer_statistics.utils import UNITS_CONVERTER, validate_stats_file
+from freesurfer_statistics.utils import validate_stats_file
 
 
 class FreesurferStats:
